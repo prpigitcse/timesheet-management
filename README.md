@@ -1,8 +1,8 @@
 # timesheet-management
-Timesheet management Specbee
-1. Registration : karishma
-2. Login : Suresh
-3. File upload : Samvada
-4. CSV Table : Farhaz
-5. User Details : Ankitha
+Timesheet management
+1. Registration
+2. Login
+3. File upload
+4. CSV Table
+5. User Details
 
