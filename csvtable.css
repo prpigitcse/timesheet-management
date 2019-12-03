@@ -15,6 +15,7 @@ tr:nth-child(even) {
     background-color: #dddddd;
 }
 
-.buttons{
+.status{
     margin-top: 20px;
+    margin-bottom: 40px;
 }

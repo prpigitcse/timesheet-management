@@ -1,3 +1,18 @@
+<?php
+$path = $_GET['path'];
+require_once('dbcreate.php');
+if (isset($_POST['submit'])) {
+
+    $sql = "UPDATE files SET status='" . $_POST['status'] . "' WHERE path='" . $path . "'";
+
+    if ($conn->query($sql) === TRUE) {
+        header("Location: user-timesheet.php");
+        exit();
+    } else {
+        echo "Error updating record: " . $conn->error;
+    }
+}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -8,10 +23,11 @@
 </head>
 
 <body>
+    <h2 class="text-center">Timesheet Table</h2>
     <div style='overflow-x:auto;'>
         <table>
             <?php
-            $f = fopen("file/timesheet.csv", "r");
+            $f = fopen("file/" . $path, "r");
             while (($line = fgetcsv($f)) !== false) {
                 echo "<tr>";
                 foreach ($line as $cell) {
@@ -24,14 +40,23 @@
         </table>
     </div>
 
-    <div class="container buttons text-center">
+    <div class="container status text-center">
         <form action="" method="post">
-            <input class="btn btn-success" type="submit" name="accept" value="Accept">
-            <input class="btn btn-warning" type="submit" name="archive" value="Archive">
-            <input class="btn btn-danger" type="submit" name="reject" value="Reject">
+            <div class="row">
+                <div class="col-8">
+                    <select name="status" class="form-control">
+                        <option value="Accepted">Accept</option>
+                        <option value="Archived">Archive</option>
+                        <option value="Rejected">Reject</option>
+                    </select>
+                </div>
+                <div class="col-4">
+                    <input class="btn btn-primary" type="submit" name="submit" value="Submit">
+                </div>
+            </div>
         </form>
     </div>
-    
+
 </body>
 
 </html>
