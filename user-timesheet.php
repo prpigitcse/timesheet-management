@@ -1,5 +1,5 @@
 <?php 
-require_once('dbcreate.php');
+require_once('dbConnect.php');
 $sql = "SELECT fileid,path,fname,status FROM files,registration WHERE registration.uid = files.uid AND files.status != 'Reject'";
 $result = $conn->query($sql); 
 ?>
@@ -16,6 +16,8 @@ $result = $conn->query($sql);
 
 <body>
 
+<?php require_once('header.php'); ?>
+
 <h2 class="text-center">User and Timesheet</h2>
     <table>
         <tr>
@@ -29,7 +31,7 @@ $result = $conn->query($sql);
             <td><?php echo $row['fileid'] ?></td>
             <td><?php echo $row['fname'] ?></td>
             <td><?php echo $row['status'] ?></td>
-            <td><a class="btn btn-primary" href="csvtable.php?path=<?php echo $row['path'] ?>">View</a></td>
+            <td><a class="btn btn-primary" href="csvtable.php?path=<?php echo $row['path'] ?>&fileid=<?php echo $row['fileid'] ?>">View</a></td>
         </tr>
         <?php } ?>
     </table>
