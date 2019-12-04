@@ -1,11 +1,17 @@
 <?php
 require_once("dbDetails.php");
 
-$conn=new mysqli($serverName,$dbUser,$dbPassword,$dbName);
 
-if($conn->connect_error)
+try
 {
-    die("Connection failed : ".$conn->connect_error);
+    if ($conn = new mysqli($serverName,$dbUser,$dbPassword,$dbName)){}
+    else
+    {
+        throw new Exception('Unable to connect');
+    }
 }
-
+catch(Exception $e)
+{
+    echo $e->getMessage();
+}
 ?>

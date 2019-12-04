@@ -1,4 +1,15 @@
+.user_details
+{
+    padding: 20px;
+    margin: 50px auto;
+}
 .user_profile_pic
 {
     border-radius: 100%;
+    height: 150px;
+    width: 150px;
+}
+.user_profile_div{
+padding: 20px;
+    background-color: cadetblue;
 }

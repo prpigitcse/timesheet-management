@@ -1,5 +1,8 @@
 <?php
+session_start();
 require_once("dbConnect.php");
+require_once("function.php");
+
 
 ?>
 
@@ -9,21 +12,33 @@ require_once("dbConnect.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
+
+
+
 </head>
 <body>
+<?php require_once("header.php");?>
 
 
     <?php
 
 
     //fetch values from registration table
-    $uid="1";
+    $uid=$_SESSION['uid'];
+    // $uid="1";
+    $fname="";
+    $lname="";
+    $email="";
+    $address="";
+    $bio="";
+    $project="";
+    $image="";
 
-    $user_reg_details_query="SELECT uid,fname,lname,email from registration where uid='$uid'";
 
-    $user_reg_details_results=$conn->query($user_reg_details_query);
+    $user_reg_details_results=selectReg($uid,$conn);
 
     if($user_reg_details_results->num_rows > 0)
     {
@@ -37,9 +52,8 @@ require_once("dbConnect.php");
 
     //fetch values from user_details table
 
-    $user_details_query="SELECT uid,address,bio,project,image from user_details where uid='$uid'";
-
-    $user_details_results=$conn->query($user_details_query);
+  
+    $user_details_results=selectUser($uid,$conn);
 
     if($user_details_results->num_rows > 0)
     {
@@ -50,46 +64,60 @@ require_once("dbConnect.php");
             $project=$user_details_row['project'];
             $image=$user_details_row['image'];
 
+
         }
     }
 
     ?>
-
-    <div class="user_details">
-        <div class="user_profile_div"> 
+ <div class="container">
+  <div class="row">
+    <div class=" col-sm user_details card" style="width: 50rem;">
+        <div class="user_profile_div text-center"> 
 
             <?php
-            if(isset($image))
+            
+            if($image != "")
             {?>
-                <img src="<?php $image?>" alt="profile" class="user_profile_pic">
+                <img src="<?php echo $image;?>" class="img-fluid img-thumbnail user_profile_pic " alt="profile">
             <?php } 
             else
             {?>
-                <img src="images/avatar.jpg" alt="profile" class="user_profile_pic">
+                <img src="images/avatar.jpg" alt="profile" class="img-fluid img-thumbnail user_profile_pic">
             <?php }  ?>
            
-            <h2>Welcome <?php $fname?></h2>
+            <h2 class="card-title">Welcome <?php echo $fname;?></h2>
         </div>
 
-
-
-        <div>
+        <div class="row">
                 
+                <div class="col-sm">
+                <br>
                 <b>Name:</b> <?php echo $fname." ".$lname;?>
                 <br>
                 <b>Email:</b> <?php echo $email;?>
                 <br>
                 <b>Location:</b> <?php echo $address;?>
+                </div>
+                <div class="col-sm">
+                <br>
+                <b>Project Details:</b> <?php echo $project;?>
                 <br>
                 <b>Interests:</b> <?php echo $bio;?>
-                <br>
-
+                </div>
+ 
         </div>
 
-        <div>
-                <a href="userUpdate.php">Update Profile</a>
+        <div class="text-center">
+                <a href="userUpdate.php" class="btn btn-success">Update Profile</a>
         </div>
     </div>
+    </div>
+    </div>
+  
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 </body>
 </html>
