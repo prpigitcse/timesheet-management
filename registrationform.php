@@ -1,10 +1,11 @@
 <?php
 session_start();
 // If the values are posted, insert them into the database.
- 
-$token = md5(uniqid(rand(), TRUE));
+if( !empty( $_REQUEST['Message'] ) )
+{
+     echo "<p style='color:red;text-align:center'>" . $_REQUEST['Message'] . "</p>";
+}
 
-$_SESSION['csrf_token'] = $token;
   
 ?>
 
