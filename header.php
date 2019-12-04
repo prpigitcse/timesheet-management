@@ -12,7 +12,7 @@
                             <a class="nav-link" href="userDetails.php">User Details</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="file_upload.php">Upload Files</a>
+                            <a class="nav-link" href="upload.php">Upload Files</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="logout.php">Logout</a>
