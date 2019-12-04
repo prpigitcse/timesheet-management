@@ -1,49 +1,11 @@
 <?php
 session_start();
-
 require_once("dbConnect.php");
 require_once("function.php");
+$token = md5(uniqid(rand(), TRUE));
+$_SESSION['csrf_token'] = $token;
 
-$uid=$_SESSION['uid'];
-// $uid="1";
-$fname="";
-$lname="";
-$email="";
-$add="";
-$bio="";
-$proj="";
-$image="";
-
-$user_reg_details_results=selectReg($uid,$conn);
-
-if($user_reg_details_results->num_rows > 0)
-{
-    while($user_reg_details_row = $user_reg_details_results->fetch_assoc())
-    {
-        $fname=trim($user_reg_details_row['fname']);
-        $lname=trim($user_reg_details_row['lname']);
-        $email=trim($user_reg_details_row['email']);
-    }
-}
-
-//fetch values from user_details table
-
-$user_details_results=selectUser($uid,$conn);
-
-if($user_details_results->num_rows > 0)
-{
-    while($user_details_row = $user_details_results->fetch_assoc())
-    {
-        $add=trim($user_details_row['address']);
-        $bio=trim($user_details_row['bio']);
-        $proj=trim($user_details_row['project']);
-        $image=trim($user_details_row['image']);  
-      
-    }
-}
-
-
-
+require_once("fetch.php");
 
 ?>
 <!DOCTYPE html>
@@ -64,10 +26,18 @@ if($user_details_results->num_rows > 0)
     
     <div class="user_details card" style="width: 50rem;">
 
+    <?php
+    if(!empty( $_REQUEST['errormessage'] ) )
+    {
+        $errormessage=$_REQUEST['errormessage'];
+        echo "<p style='color:red;text-align:center'>" . $_REQUEST['errormessage'] . "</p>";
+    }
+    ?>
+
     <h2 class="card-title">Update Profile</h2>
     
         
-        <form action="" method="post" id="registration"  enctype="multipart/form-data">
+        <form action="userUpdateAction.php" method="post" id="registration"  enctype="multipart/form-data">
         
         <div class="form-group">
             <label for="fname">First Name</label>
@@ -80,6 +50,8 @@ if($user_details_results->num_rows > 0)
         <div class="form-group">
             <label for="password">New Password</label>
             <input type="Password"class="form-control"  name="newpassword" placeholder="New Password" id="password">
+            <br><span id="errormessage" style="color:red;"></span>
+        
         </div>
         <div class="form-group">
             <label for="ConfirmPassword">Confirm Password</label>
@@ -105,96 +77,15 @@ if($user_details_results->num_rows > 0)
               <label for="profile_pic">Upload Profile Picture</label>
               <input type="file" class="form-control-file" id="profile_pic" name="profile_pic" >
         </div>
+
+        <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
         <input type="submit" class="btn btn-warning" name="back" value="<< Back" >
-            <input type="submit" class="btn btn-primary" name="submit" value="Update" >
+        <input type="submit" class="btn btn-primary" name="submit" value="Update" >
   
         </form>
     </div>
     </div>
     </div>
-
-<?php
- if(isset($_POST['back']))
- {
-    header("Location:userDetails.php");
-
- }
- if(isset($_POST['submit']))
- {
-    
-$uid=$_SESSION['uid'];
-    // $uid="1";
-
-    $fname=cleantext($_POST['fname']);
-    $lname=cleantext($_POST['lname']);
-    $password=cleantext($_POST['newpassword']);
-    $cpassword=cleantext($_POST['confirmpassword']);
-    $add=cleantext($_POST['address']);
-    $bio=cleantext($_POST['bio']);
-    $proj=cleantext($_POST['project']);
-    
-    if($password != $cpassword)
-    {
-        echo "<script>alert('Passwords does not match');</script>";
-    }
-    else
-    {
-
-        if(is_uploaded_file($_FILES['profile_pic']['tmp_name']))
-        {
-            // $profile_pic= $_FILES['profile_pic']['name'];
-            $file_tmp=$_FILES['profile_pic']['tmp_name'];
-            // $target = 'images/'.$profile_pic;
-            // $image=base64_encode($profile_pic);
-            // move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target);
-            $type = pathinfo($file_tmp, PATHINFO_EXTENSION);
-            $data = file_get_contents($file_tmp);
-            $image = 'data:image/' . $type . ';base64,' . base64_encode($data);
-            
-          
-        }
-
-
-
-        if($password!="" && $cpassword!="")
-        {
-           $hashpassword=password_hash($password,PASSWORD_DEFAULT);
-            updateRegWithPass($uid, $fname, $lname, $email,$hashpassword,$conn);
-        }
-        else
-        {
-            updateReg($uid, $fname, $lname, $email,$conn);
-        }
-       
-
-        $user_details_results=selectUser($uid,$conn);
-        
-        if($user_details_results->num_rows > 0)
-        {
-            while($user_details_row = $user_details_results->fetch_assoc())
-            {
-                updateUser($add, $bio,$proj,$image, $uid,$conn);
-            }
-        }
-        else
-        {
-                insertUser($uid, $add, $bio,$proj,$image,$conn);
-        }
-
-       header("Location:userDetails.php");
-
-    }
-   
- }
-
-
-
-
-
-
-?>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -202,6 +93,7 @@ $uid=$_SESSION['uid'];
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 <script>
+
 $(document).ready(function() {
     $('#ConfirmPassword').on('keyup', function () {
       if ($('#password').val() == $('#ConfirmPassword').val()) {
