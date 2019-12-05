@@ -1,10 +1,11 @@
 <?php
 session_start();
-include_once("dbConnect.php");
+include_once("php/functions.php");
 if (isset($_POST["login"])) {
     if (!empty($_POST['email']) && !empty($_POST['pass'])) {
         $email = $_POST['email'];
         $pass = $_POST['pass'];
+        $conn = connectionDB();
         $result = $conn->query("SELECT * FROM registration WHERE email='".$email."'");
         $num = $result->num_rows;
         if ($num != 0) {
@@ -25,15 +26,15 @@ if (isset($_POST["login"])) {
                 }
             } else{
                 $error='Incorrect Email or Password';
-                header("Location:login.php?error={$error}");
+                header("Location:index.php?error={$error}");
             }
         } else{
             $error='Invalid Email or Password';
-            header("Location:login.php?error={$error}");
+            header("Location:index.php?error={$error}");
         }
     } else{
         $error='Required all fields!!';
-        header("Location:login.php?error={$error}");
+        header("Location:index.php?error={$error}");
     }
-} 
+}
 ?>

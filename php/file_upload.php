@@ -3,10 +3,10 @@ require_once("dbConnect.php");
 session_start();
 function upload($conn)
 {
-    if(isset($_SESSION['uid']) && !empty($_SESSION['uid'])) 
+    if(isset($_SESSION['uid']) && !empty($_SESSION['uid']))
     {
         $username=$_SESSION['user'];
-        $uid=$_SESSION['uid'];    
+        $uid=$_SESSION['uid'];
         if(isset($_POST['uploadCSV']))
         {
             if(isset($_POST['csrf_token']))
@@ -16,7 +16,7 @@ function upload($conn)
                     if(is_uploaded_file($_FILES['csvfile']['tmp_name']))
                     {
                         $filename = basename($_FILES['csvfile']['name']);
-                        if ($_FILES['csvfile']['error'] > 0) 
+                        if ($_FILES['csvfile']['error'] > 0)
                         {
                             echo "Return Code: " . $_FILES['csvfile']['error'] . "<br />";
                         }
@@ -43,7 +43,7 @@ function upload($conn)
                                 }
                             }
                         }
-                    }   
+                    }
                     else
                     {
                         die('Please upload a CSV file.');
@@ -62,10 +62,10 @@ function upload($conn)
     }
     else
     {
-        header('location:login.php');
+        header('location:index.php');
         echo "You need to login first!!!";
     }
-       
+
 }
 upload($conn);
 ?>

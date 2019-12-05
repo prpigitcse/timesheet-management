@@ -1,6 +1,6 @@
 <?php
 $serverName="localhost";
 $dbUser="root";
-$dbPassword="specbee";
-$dbName="timesheetDB";
+$dbPassword="root";
+$dbName="timesheet";
 ?>

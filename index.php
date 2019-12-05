@@ -1,6 +1,5 @@
-<?php 
-session_start();
-include_once("dbConnect.php");
+<?php
+require_once("php/functions.php");
 ?>
 
 <!doctype html>
@@ -10,13 +9,13 @@ include_once("dbConnect.php");
             window.history.forward();
         </script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link rel='stylesheet' href='login.css'>
+        <link rel='stylesheet' href='css/styles.css'>
     </head>
     <body>
         <section class='container col-8 col-sm-6 col-md-6 col-lg-3'>
             <section class="row justify-content-center">
                 <div>
-                    <form action="loginaction.php" method='post'>
+                    <form action="php/loginaction.php" method='post'>
                         <div class="form-group">
                             <h1>Login</h1>
                             <label>Email:</label>
@@ -32,7 +31,7 @@ include_once("dbConnect.php");
                             }
                         ?>
                         <button type="submit" class="btn btn-primary" name="login">Login</button>
-                        <a href="registrationform.php">New User? Register</a>
+                        <a href="registration.php">New User? Register</a>
                     </form>
                 </div>
             </section>
