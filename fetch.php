@@ -3,11 +3,11 @@
 require_once("dbConnect.php");
 require_once("function.php");
 
-// if(!isset($_SESSION["user"]))
-//         header("Location: login.php");
+if(!isset($_SESSION["user"]))
+        header("Location: login.php");
 
-// $uid=$_SESSION['uid'];
-$uid="9";
+$uid=$_SESSION['uid'];
+// $uid="9";
 
 $fname="";
 $lname="";
@@ -16,6 +16,8 @@ $add="";
 $bio="";
 $proj="";
 $image="";
+
+//fetch values fromregistration table
 
 $user_reg_details_results=selectReg($uid,$conn);
 

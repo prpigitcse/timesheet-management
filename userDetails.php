@@ -4,8 +4,8 @@ require_once("dbConnect.php");
 require_once("function.php");
 require_once("fetch.php");
 
-// if(!isset($_SESSION["user"]))
-//         header("Location: login.php");
+if(!isset($_SESSION["user"]))
+        header("Location: login.php");
   
 ?>
 

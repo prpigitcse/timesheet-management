@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-// if(!isset($_SESSION["user"]))
-//         header("Location: login.php");
+if(!isset($_SESSION["user"]))
+        header("Location: login.php");
 
 require_once("dbConnect.php");
 require_once("function.php");

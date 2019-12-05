@@ -2,8 +2,8 @@
 
 session_start();
 
-// if(!isset($_SESSION["user"]))
-//         header("Location: login.php");
+if(!isset($_SESSION["user"]))
+        header("Location: login.php");
 
 require_once("dbConnect.php");
 require_once("function.php");
@@ -25,8 +25,8 @@ function userDstailsUpdate($conn)
 
         if($_SESSION['csrf_token'] === $_POST['csrf_token'])
         {
-        // $uid=$_SESSION['uid'];
-        $uid="9";
+        $uid=$_SESSION['uid'];
+        // $uid="9";
 
         $fname=cleantext($_POST['fname']);
         $lname=cleantext($_POST['lname']);
