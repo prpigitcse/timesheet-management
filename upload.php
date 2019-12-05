@@ -11,6 +11,7 @@ $_SESSION['csrf_token'] = $token;
 
 <script>
     $(document).ready(function(){
+        
      $("#csvfile").change(function () {
         var fileExtension = ['csv'];
         if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
@@ -24,15 +25,38 @@ $_SESSION['csrf_token'] = $token;
     
 </head>
 <body>
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+                <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="home.php">Home</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="userDetails.php">User Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="upload.php">Upload Files</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 <div class="container">
     <h2>Upload your timesheet file here</h2>
     <form enctype="multipart/form-data" action="file_upload.php" method="post" id="uploadfile"> 
         <label>Upload CSV file : </label><br>
-        <input type="file" name="csvfile" id="csvfile" value="" class="text-center"/> <br><br>
+        <input type="file" name="csvfile" id="csvfile" value="" accept=".csv" class="text-center"/> <br><br>
+        <input type="hidden" name="csrf_token" value="<?php echo $token; ?>"/>
         <input type="submit" name="uploadCSV" value="Upload" class="btn btn-primary" />
     </form>
     <br>
-    <input type="hidden" name="csrf_token" value="<?php echo $token; ?>">
+  
     </div>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
