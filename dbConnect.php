@@ -12,5 +12,6 @@ catch(Exception $e)
 {
     echo $e->getMessage();
 }
-
+require_once("functions.php");
+$conn=connectionDB($serverName,$dbUser,$dbPassword,$dbName);
 ?>
