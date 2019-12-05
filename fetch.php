@@ -3,8 +3,11 @@
 require_once("dbConnect.php");
 require_once("function.php");
 
-$uid=$_SESSION['uid'];
-// $uid="9";
+// if(!isset($_SESSION["user"]))
+//         header("Location: login.php");
+
+// $uid=$_SESSION['uid'];
+$uid="9";
 
 $fname="";
 $lname="";
