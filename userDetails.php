@@ -1,12 +1,11 @@
 <?php
 session_start();
-require_once("dbConnect.php");
 require_once("function.php");
 require_once("fetch.php");
 
 if(!isset($_SESSION["user"]))
         header("Location: login.php");
-  
+
 ?>
 
 <!DOCTYPE html>
@@ -53,11 +52,11 @@ if(!isset($_SESSION["user"]))
                 <div class="user_profile_div text-center">
 
                     <?php
-            
+
             if($image != "")
             {?>
                     <img src="<?php echo $image;?>" class="img-fluid img-thumbnail user_profile_pic " alt="profile">
-                    <?php } 
+                    <?php }
             else
             {?>
                     <img src="images/avatar.jpg" alt="profile" class="img-fluid img-thumbnail user_profile_pic">

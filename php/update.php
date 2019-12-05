@@ -1,5 +1,4 @@
 <?php
-require_once('dbConnect.php');
 
 $sql = "UPDATE files SET status='" . $_POST['status'] . "' WHERE fileid='".$_POST['fileid']."'";
 
