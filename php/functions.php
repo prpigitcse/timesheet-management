@@ -4,8 +4,8 @@ function connectionDB()
 {
   $serverName="localhost";
   $dbUser="root";
-  $dbPassword="root";
-  $dbName="timesheet";
+  $dbPassword="";
+  $dbName="timesheetDB";
 
   $conn = new mysqli($serverName,$dbUser,$dbPassword,$dbName);
   if($conn->connect_error)
