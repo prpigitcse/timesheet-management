@@ -1,5 +1,5 @@
 <?php 
-require_once('dbConnect.php');
+
 $sql = "SELECT fileid,path,fname,status FROM files,registration WHERE registration.uid = files.uid AND files.status != 'Reject'";
 $result = $conn->query($sql); 
 ?>

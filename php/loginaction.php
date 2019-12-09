@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("php/functions.php");
+include_once("functions.php");
 if (isset($_POST["login"])) {
     if (!empty($_POST['email']) && !empty($_POST['pass'])) {
         $email = $_POST['email'];
@@ -15,26 +15,37 @@ if (isset($_POST["login"])) {
                 $fname = $row['fname'];
                 $lname = $row['lname'];
                 $uid = $row['uid'];
+                $status = $row['status'];
             }
-            if ($email == $dbemail && password_verify($pass, $dbpass)) {
-                if ($email == "admin@specbee.com")
-                    header("Location:user-timesheet.php");
-                else {
-                    $_SESSION['user'] = $fname.$lname;
-                    $_SESSION['uid'] = $uid;
-                    header("Location:home.php");
+            if($status == "pending"){
+                $error = 'Your request for access is pending';
+                header("Location:../index.php?error={$error}");
+            }
+            if($status == "rejected"){
+                $error = 'Your request for access is rejected';
+                header("Location:../index.php?error={$error}");
+            }
+            if($status == "approved"){
+                if ($email == $dbemail && password_verify($pass, $dbpass)) {
+                    if ($email == "admin@specbee.com")
+                        header("Location:../user-timesheet.php");
+                    else {
+                        $_SESSION['user'] = $fname." ".$lname;
+                        $_SESSION['uid'] = $uid;
+                        header("Location:../home.php");
+                    }
+                } else{
+                    $error='Incorrect Email or Password';
+                    header("Location:../index.php?error={$error}");
                 }
-            } else{
-                $error='Incorrect Email or Password';
-                header("Location:index.php?error={$error}");
             }
         } else{
             $error='Invalid Email or Password';
-            header("Location:index.php?error={$error}");
+            header("Location:../index.php?error={$error}");
         }
     } else{
         $error='Required all fields!!';
-        header("Location:index.php?error={$error}");
+        header("Location:../index.php?error={$error}");
     }
 }
 ?>

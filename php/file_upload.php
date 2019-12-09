@@ -1,5 +1,5 @@
 <?php
-require_once("dbConnect.php");
+
 session_start();
 function upload($conn)
 {
@@ -51,12 +51,12 @@ function upload($conn)
                 }
                 else
                 {
-                    header('location:login.php');
+                    header('location:index.php');
                 }
             }
             else
             {
-                header('location:login.php');
+                header('location:index.php');
             }
         }
     }

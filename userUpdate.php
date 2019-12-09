@@ -2,14 +2,19 @@
 session_start();
 
 if(!isset($_SESSION["user"]))
-        header("Location: login.php");
+        header("Location: index.php");
 
-require_once("dbConnect.php");
-require_once("function.php");
+require_once("php/functions.php");
 $token = md5(uniqid(rand(), TRUE));
 $_SESSION['csrf_token'] = $token;
 
-require_once("fetch.php");
+
+$conn=connectionDB();
+$uid=$_SESSION['uid'];
+// $uid="9";
+$dataReg=fetchReg($uid,$conn);
+$dataUser=fetchUser($uid,$conn);
+
 
 ?>
 <!DOCTYPE html>
@@ -20,7 +25,7 @@ require_once("fetch.php");
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Update Profile</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-md navbar-light bg-light">
@@ -37,7 +42,7 @@ require_once("fetch.php");
                 <a class="nav-link" href="userDetails.php">User Details</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="file_upload.php">Upload Files</a>
+                <a class="nav-link" href="upload.php">Upload Files</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="logout.php">Logout</a>
@@ -62,40 +67,42 @@ require_once("fetch.php");
     <h2 class="card-title">Update Profile</h2>
     
         
-        <form action="userUpdateAction.php" method="post" id="registration"  enctype="multipart/form-data">
+        <form action="php/userUpdateAction.php" method="post" id="registration"  enctype="multipart/form-data">
         
         <div class="form-group">
             <label for="fname">First Name</label>
-            <input type="text" name="fname" class="form-control" id="fname" placeholder="Firstname" value="<?php echo $fname;?>">
+            <input type="text" name="fname" class="form-control" id="fname" placeholder="Firstname" value="<?php echo $dataReg['fname'];?>">
+            <span id="fn-errormsg"></span>
         </div>
         <div class="form-group">
             <label for="lname">Last Name</label>
-            <input type="text" name="lname" class="form-control" id="lname" placeholder="Lastname" value="<?php echo $lname;?>">
+            <input type="text" name="lname" class="form-control" id="lname" placeholder="Lastname" value="<?php echo $dataReg['lname'];?>">
+            <span id="ln-errormsg"></span>
         </div>
         <div class="form-group">
             <label for="password">New Password</label>
             <input type="Password"class="form-control"  name="newpassword" placeholder="New Password" id="password">
-            <br><span id="errormessage" style="color:red;"></span>
+            <span id="errormessage" style="color:red;"></span>
         
         </div>
         <div class="form-group">
             <label for="ConfirmPassword">Confirm Password</label>
             <input type="Password" class="form-control" name="confirmpassword" placeholder="Confirm Password" id="ConfirmPassword">
-            <br><span id="message"></span>
+            <span id="message"></span>
         </div>
         <div class="form-group">
             <label for="address">Address</label>
-            <textarea name="address" id="address" class="form-control" cols="30" rows="5" placeholder="Address"><?php echo $add;?>
+            <textarea name="address" id="address" class="form-control" cols="30" rows="5" placeholder="Address"><?php echo $dataUser['add'];?>
             </textarea>
         </div>
         <div class="form-group">
             <label for="bio">Interests</label>
-            <textarea name="bio" id="bio" class="form-control" cols="30" rows="5" placeholder="Your Interests..." ><?php echo $bio;?>
+            <textarea name="bio" id="bio" class="form-control" cols="30" rows="5" placeholder="Your Interests..." ><?php echo $dataUser['bio'];?>
             </textarea>
         </div>
         <div class="form-group">
             <label for="project">Projects</label>
-            <textarea name="project" id="project" class="form-control" cols="30" rows="5" placeholder="Your Project Details..." ><?php echo $proj;?>
+            <textarea name="project" id="project" class="form-control" cols="30" rows="5" placeholder="Your Project Details..." ><?php echo $dataUser['proj'];?>
             </textarea>
         </div>
         <div class="form-group">
@@ -118,14 +125,37 @@ require_once("fetch.php");
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
 <script>
-
 $(document).ready(function() {
     $('#ConfirmPassword').on('keyup', function () {
-      if ($('#password').val() == $('#ConfirmPassword').val()) {
-    $('#message').html('Matching').css('color', 'green');
-  } else 
-    $('#message').html('Not Matching').css('color', 'red');
-});
+        if ($('#password').val() == $('#ConfirmPassword').val()) {
+            $('#message').html('Matching').css('color', 'green');
+        } else 
+            $('#message').html('Not Matching').css('color', 'red');
+    });
+    $("#fname").keypress(function (e) {
+        var keyCode = e.keyCode || e.which;
+        var regex = /^[A-Za-z ]+$/;
+        var isValid = regex.test(String.fromCharCode(keyCode));
+        if (!isValid) {
+            $("#fn-errormsg").html("Only Alphabets allowed.").css({'color':'red','font-size':'12px'});
+        }
+        else{
+            $("#fn-errormsg").html(" ");
+        }
+        return isValid;
+    });
+    $("#lname").keypress(function (e) {
+        var keyCode = e.keyCode || e.which;
+        var regex = /^[A-Za-z ]+$/;
+        var isValid = regex.test(String.fromCharCode(keyCode));
+        if (!isValid) {
+            $("#ln-errormsg").html("Only Alphabets allowed.").css({'color':'red','font-size':'12px'});
+        }
+        else{
+            $("#ln-errormsg").html(" ");
+        }
+        return isValid;
+    });
 });
 </script>
 </body>

@@ -1,10 +1,16 @@
 <?php
 session_start();
-require_once("function.php");
-require_once("fetch.php");
+require_once("php/functions.php");
 
 if(!isset($_SESSION["user"]))
-        header("Location: login.php");
+        header("Location: index.php");
+
+
+$conn=connectionDB();
+$uid=$_SESSION['uid'];
+// $uid="9";
+$dataReg=fetchReg($uid,$conn);
+$dataUser=fetchUser($uid,$conn);
 
 ?>
 
@@ -18,7 +24,7 @@ if(!isset($_SESSION["user"]))
     <title>Profile Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 
 </head>
 
@@ -37,7 +43,7 @@ if(!isset($_SESSION["user"]))
                     <a class="nav-link" href="userDetails.php">User Details</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="file_upload.php">Upload Files</a>
+                    <a class="nav-link" href="upload.php">Upload Files</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Logout</a>
@@ -53,44 +59,40 @@ if(!isset($_SESSION["user"]))
 
                     <?php
 
-            if($image != "")
-            {?>
-                    <img src="<?php echo $image;?>" class="img-fluid img-thumbnail user_profile_pic " alt="profile">
-                    <?php }
-            else
-            {?>
-                    <img src="images/avatar.jpg" alt="profile" class="img-fluid img-thumbnail user_profile_pic">
-                    <?php }  ?>
-
-                    <h2 class="card-title">Welcome <?php echo $fname;?></h2>
+                    if($dataUser['image'] != "")
+                    {?>
+                            <img src="<?php echo $dataUser['image'];?>" class="img-fluid img-thumbnail user_profile_pic " alt="profile">
+                            <?php }
+                    else
+                    {?>
+                        <img src="assets/images/avatar.jpg" alt="profile" class="img-fluid img-thumbnail user_profile_pic">
+                        <?php }  ?>
+                        <h2 class="card-title">Welcome <?php echo $dataReg['fname'];?></h2>
                 </div>
-
                 <div class="row">
-
                     <div class="col-sm">
                         <br>
-                        <b>Name:</b> <?php echo $fname." ".$lname;?>
+                        <b>Name:</b> <?php echo $dataReg['fname']." ".$dataReg['lname'];?>
                         <br>
-                        <b>Email:</b> <?php echo $email;?>
+                        <b>Email:</b> <?php echo $dataReg['email'];?>
                         <br>
-                        <b>Location:</b> <?php echo $add;?>
+                        <b>Designation:</b> <?php echo $dataReg['role'];?>
                     </div>
                     <div class="col-sm">
                         <br>
-                        <b>Project Details:</b> <?php echo $proj;?>
+                        <b>Location:</b> <?php echo $dataUser['add'];?>
                         <br>
-                        <b>Interests:</b> <?php echo $bio;?>
+                        <b>Project Details:</b> <?php echo $dataUser['proj'];?>
+                        <br>
+                        <b>Interests:</b> <?php echo $dataUser['bio'];?>
                     </div>
-
                 </div>
-
                 <div class="text-center">
                     <a href="userUpdate.php" class="btn btn-success">Update Profile</a>
                 </div>
             </div>
         </div>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
@@ -103,5 +105,4 @@ if(!isset($_SESSION["user"]))
     </script>
 
 </body>
-
 </html>
