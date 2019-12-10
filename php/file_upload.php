@@ -4,7 +4,6 @@ session_start();
 $conn=connectionDB();
 if(isset($_SESSION['uid']) && !empty($_SESSION['uid']))
 {
-    echo "hi";
     $username=$_SESSION['user'];
     $uid=$_SESSION['uid'];
     if(isset($_POST['importCSV']))
@@ -28,13 +27,10 @@ if(isset($_SESSION['uid']) && !empty($_SESSION['uid']))
                             $ts=strtotime("now");
                             $tmpfile = $username."-".date("M")."-".$ts.$fileext;
                             $files='../files/timesheet/'.$tmpfile;
-                            echo $status;
                             if(move_uploaded_file($_FILES['csvfile']['tmp_name'],$files))
                             {
                                 $status="N/A";
-                                echo $status;
                                 insertFiles($conn, $uid, $tmpfile, $status);
-                                
                                 header('location:../home.php');
                             }
                             else

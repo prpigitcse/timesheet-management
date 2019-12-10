@@ -62,16 +62,26 @@ $_SESSION['csrf_token'] = $token;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script>
         $(document).ready(function(){
-        var filedetails;
+
             $("#csvfile").change(function () {
                 var fileExtension = ['csv'];
                 if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
                     alert("Invalid format of file" );
+                    $("#uploadfile")[0].reset();
                 }
             });
+
+
             $('#uploadCSV').on('click', function(event){
+           
                     event.preventDefault();
+                    var inputcsv=$('#csvfile')[0];
                     var uploadfile=$('#uploadfile')[0];
+                    
+                    if($(inputcsv).val()==""){
+                        alert("Please choose a CSV file");
+                    }
+                    else{
                     $.ajax({
                      url:"php/fetchcsv.php",
                      method:"POST",
@@ -112,6 +122,7 @@ $_SESSION['csrf_token'] = $token;
                       $('#csv_file_data').html(html);
                      }
                     });
+                }
             });
         });
     </script>
