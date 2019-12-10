@@ -23,34 +23,42 @@ function cleantext($string)
    return $string;
 }
 
-function register($conn, $firstname,$lastname, $email, $password, $cpassword)
+function register($conn, $firstname,$lastname, $email, $password, $cpassword, $role, $status)
 {
   $allowed = [
       'specbee.com',
   ];
+  
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $parts = explode('@', $email);
     $domain = array_pop($parts);
 
     if (!in_array($domain, $allowed)) {
       $Message = "Invalid email address. Please enter email in the form @specbee.com";
-      header("Location:../registration.php?Message={$Message}");
+      header("Location:../registration.php?error={$Message}");
     } else {
+
+   
+
       $slquery = "SELECT 1 FROM registration WHERE email = '$email'";
-      $selectresult = mysqli_query($conn,$slquery);
-      if (mysqli_num_rows($selectresult) > 0) {
-          $Message = "email already exists";
-          header("Location:../registration.php?Message={$Message}");
+      $selectresult = $conn->query($slquery);
+      if ($selectresult->num_rows > 0) {
+          $Message = "Email already exists";
+          header("Location:../registration.php?error={$Message}");
       } elseif ($password != $cpassword){
-          $Message = "passwords doesnot match";
-          header("Location:../registration.php?Message={$Message}");
+          $Message = "Passwords doesnot match";
+          header("Location:../registration.php?error={$Message}");
       } else {
+       
           $hashpassword=password_hash($password,PASSWORD_DEFAULT);
-          $query = "INSERT INTO `registration` (fname,lname,email,password) VALUES ('$firstname','$lastname','$email','$hashpassword')";
-          $result = mysqli_query($conn,$query);
+  
+          $stmt = $conn->prepare("INSERT INTO registration (fname,lname,email,password,role,status) VALUES (?, ?,?, ?, ?,?)");
+          $stmt->bind_param("ssssss",$firstname,$lastname,$email,$hashpassword,$role,$status);
+          $result=$stmt->execute();
+                       
           if ($result) {
             $Message = "User Created Successfully";
-            header("Location:../index.php?Message={$Message}");
+            header("Location:../index.php?error={$Message}");
           }
       }
     }
