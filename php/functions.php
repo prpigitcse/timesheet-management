@@ -8,7 +8,8 @@ function connectionDB()
   $dbName="timesheetDB";
 
   $conn = new mysqli($serverName,$dbUser,$dbPassword,$dbName);
-  if($conn->connect_error) {
+  if($conn->connect_error) 
+  {
       die("Connection failed : ".$conn->connect_error);
   }
   return $conn;
@@ -22,39 +23,49 @@ function cleantext($string)
    return $string;
 }
 
-function register($conn, $firstname,$lastname, $email, $password, $cpassword)
+function register($conn, $firstname,$lastname, $email, $password, $cpassword, $role, $status)
 {
   $allowed = [
       'specbee.com',
   ];
+  
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $parts = explode('@', $email);
     $domain = array_pop($parts);
 
     if (!in_array($domain, $allowed)) {
       $Message = "Invalid email address. Please enter email in the form @specbee.com";
-      header("Location:../registration.php?Message={$Message}");
+      header("Location:../registration.php?error={$Message}");
     } else {
+
+   
+
       $slquery = "SELECT 1 FROM registration WHERE email = '$email'";
-      $selectresult = mysqli_query($conn,$slquery);
-      if (mysqli_num_rows($selectresult) > 0) {
-          $Message = "email already exists";
-          header("Location:../registration.php?Message={$Message}");
+      $selectresult = $conn->query($slquery);
+      if ($selectresult->num_rows > 0) {
+          $Message = "Email already exists";
+          header("Location:../registration.php?error={$Message}");
       } elseif ($password != $cpassword){
-          $Message = "passwords doesnot match";
-          header("Location:../registration.php?Message={$Message}");
+          $Message = "Passwords doesnot match";
+          header("Location:../registration.php?error={$Message}");
       } else {
+       
           $hashpassword=password_hash($password,PASSWORD_DEFAULT);
-          $query = "INSERT INTO `registration` (fname,lname,email,password) VALUES ('$firstname','$lastname','$email','$hashpassword')";
-          $result = mysqli_query($conn,$query);
+  
+          $stmt = $conn->prepare("INSERT INTO registration (fname,lname,email,password,role,status) VALUES (?, ?,?, ?, ?,?)");
+          $stmt->bind_param("ssssss",$firstname,$lastname,$email,$hashpassword,$role,$status);
+          $result=$stmt->execute();
+                       
           if ($result) {
             $Message = "User Created Successfully";
-            header("Location:../index.php?Message={$Message}");
+            header("Location:../index.php?error={$Message}");
           }
       }
     }
   }
 }
+
+
 function selectAllUsers($conn)
 {
   $user_reg_details_query="SELECT * from registration";
@@ -196,5 +207,64 @@ function userDetailsUpdate($data)
         }
         header("Location: ../userDetails.php");
     }
+}
+
+function insertRemarks($conn, $fileid, $uid, $admin, $msg)
+{
+    $query = "INSERT INTO `remarks` (fileid,reply_from,reply_to,message,created_at) VALUES ('$fileid','$uid','$admin','$msg',now())";
+    $result = $conn -> query($query);
+    return $result;
+}
+function selectFilesUsingFileid($conn, $fileid)
+{
+    $result = $conn -> query("SELECT * FROM files where fileid='$fileid'");
+    return $result;
+}
+function selectFilesUsingUserid($conn, $uid)
+{
+    $result = $conn -> query("SELECT * FROM files where uid='$uid'");
+    return $result;
+}
+function selectFilesUsingPath($conn, $path)
+{
+    $result = $conn -> query("SELECT * FROM files where path='$path'");
+    return $result;
+}
+function selectRemarksUsingFileid($conn, $fileid)
+{
+    $result = $conn -> query("SELECT * FROM remarks where fileid='$fileid'");
+    return $result;
+}
+function selectRegistrationUsingEmail($conn, $email)
+{
+    $result = $conn->query("SELECT * FROM registration WHERE email='".$email."'");
+    return $result;
+}
+
+
+function colorDark($from){
+  if($from == 'admin'){
+      echo "darker";
+  }
+}
+
+function msgPosition($from){
+  if($from == 'admin'){
+      echo "msg-right";
+  }
+}
+
+function timePosition($from){
+  if($from == 'admin'){
+      echo "time-left";
+  }
+  else{
+      echo "time-right";
+  }
+}
+
+function msgTime($date){
+  $date=date_create($date);
+  echo date_format($date,"h:i M d");
 }
 ?>

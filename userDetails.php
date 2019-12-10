@@ -8,7 +8,6 @@ if(!isset($_SESSION["user"]))
 
 $conn=connectionDB();
 $uid=$_SESSION['uid'];
-// $uid="9";
 $dataReg=fetchReg($uid,$conn);
 $dataUser=fetchUser($uid,$conn);
 

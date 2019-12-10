@@ -14,7 +14,6 @@ if(isset($_POST['submit'])) {
     if(isset($_POST['csrf_token'])) {
         if($_SESSION['csrf_token'] === $_POST['csrf_token']) {
         $uid=$_SESSION['uid'];
-        // $uid="9";
         $data=['uid'=>"$uid",'fname'=>"",'lname'=>"",'password'=>"",'cpassword'=>"",'add'=>"",'bio'=>"",'proj'=>"",'image'=>""];
 
         $data['fname']=cleantext($_POST['fname']);

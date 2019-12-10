@@ -11,7 +11,6 @@ $_SESSION['csrf_token'] = $token;
 
 $conn=connectionDB();
 $uid=$_SESSION['uid'];
-// $uid="9";
 $dataReg=fetchReg($uid,$conn);
 $dataUser=fetchUser($uid,$conn);
 

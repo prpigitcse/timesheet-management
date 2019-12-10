@@ -3,13 +3,11 @@
 session_start();
 require_once("php/functions.php");
 
-if(!isset($_SESSION["user"]))
+if(!isset($_SESSION["admin"]))
         header("Location: index.php");
 
 
 $conn=connectionDB();
-
-
 
 ?>
 
@@ -25,6 +23,28 @@ $conn=connectionDB();
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="userTimesheet.php">Home</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="adminApproval.php">Registered Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="upload.php">Upload Files</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     <div class="container">
         <div class="text-center py-2">
             <h2>Registered Users</h2>
@@ -116,7 +136,6 @@ $conn=connectionDB();
         $(document).ready(function() {
 
             $("#status").change(function(e) {
-                    // var val = $('#status option:selected').val();
                     var val = $(this).val();
                     e.preventDefault();
                     $.ajax({
