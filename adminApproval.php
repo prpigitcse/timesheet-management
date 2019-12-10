@@ -99,7 +99,7 @@ $conn=connectionDB();
         {
             $uid=$user_reg_details_row['uid'];
             echo "<tr>";
-            echo "<td>  <input type='checkbox' class='selectuser' name='selectuser[]' value='.$uid.'></td>";
+            echo "<td>  <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'></td>";
             echo "<td>".$user_reg_details_row['fname']." ".$user_reg_details_row['lname']."</td>";
             echo "<td>".$user_reg_details_row['email']."</td>";
             echo "<td>".$user_reg_details_row['role']."</td>";
