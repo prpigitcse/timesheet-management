@@ -1,7 +1,10 @@
 <?php
+session_start();
+if (isset($_SESSION['admin'])) {
+
 require_once('php/functions.php');
 $conn = connectionDB();
-$sql = "SELECT fileid,path,fname,status FROM files,registration WHERE registration.uid = files.uid AND files.status != 'Reject'";
+$sql = "SELECT fileid,path,fname,files.status FROM files,registration WHERE registration.uid = files.uid AND files.status != 'Reject'";
 $result = $conn->query($sql);
 ?>
 
@@ -20,14 +23,14 @@ $result = $conn->query($sql);
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="home.php">Home</a>
+                    <a class="nav-link" href="userTimesheet.php">Home</a>
                 </li>
             </ul>
         </div>
         <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="userDetails.php">User Details</a>
+                    <a class="nav-link" href="adminApproval.php">Registered Users</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="upload.php">Upload Files</a>
@@ -61,3 +64,9 @@ $result = $conn->query($sql);
 </body>
 
 </html>
+<?php 
+} 
+else{
+    echo "access denied";
+}
+?>

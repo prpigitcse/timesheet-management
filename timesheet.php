@@ -1,8 +1,11 @@
 <?php
-if (!isset($_SESSION['admin'])) {
+session_start();
+$token = md5(uniqid(rand(), TRUE));
+$_SESSION['csrf_token'] = $token;
+if (isset($_SESSION['admin'])) {
     require_once('php/functions.php');
     $conn = connectionDB();
-    $sql = "SELECT registration.fname as reply_from, remarks.message as msg, remarks.created_at as time FROM remarks, files,registration WHERE files.fileid = remarks.fileid AND remarks.reply_from = registration.uid AND files.fileid = '".$_GET['fileid']."' ";
+    $sql = "SELECT registration.uid as uid,registration.role as role, registration.fname as reply_from, remarks.message as msg, remarks.created_at as time FROM remarks, files,registration WHERE files.fileid = remarks.fileid AND remarks.reply_from = registration.uid AND files.fileid = '" . $_GET['fileid'] . "' ";
     $result = $conn->query($sql);
     ?>
     <!DOCTYPE html>
@@ -20,14 +23,14 @@ if (!isset($_SESSION['admin'])) {
             <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="home.php">Home</a>
+                        <a class="nav-link" href="userTimesheet.php">Home</a>
                     </li>
                 </ul>
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="userDetails.php">User Details</a>
+                        <a class="nav-link" href="adminApproval.php">Registered Users</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="upload.php">Upload Files</a>
@@ -55,15 +58,15 @@ if (!isset($_SESSION['admin'])) {
             </table>
         </div>
         <?php while ($row = $result->fetch_assoc()) { ?>
-        <div class="container">
-            <div class="chat-container <?php colorDark($row['reply_from']); ?>">
-                <div class="<?php msgRight($row['reply_from']); ?>">
-                    <b><?php echo $row['reply_from']; ?>:</b>
-                    <p><?php echo $row['msg']; ?></p>
+            <div class="container">
+                <div class="chat-container <?php colorDark($row['role']); ?>">
+                    <div class="<?php msgPosition($row['role']); ?>">
+                        <b><?php echo $row['reply_from']; ?>:</b>
+                        <p><?php echo $row['msg']; ?></p>
+                    </div>
+                    <div class="<?php timePosition($row['role']); ?>"><?php msgTime($row['time']); ?></div>
                 </div>
-                <div class="<?php timeRight($row['reply_from']); ?>"><?php echo $row['time']; ?></div>
             </div>
-        </div>
         <?php } ?>
 
         <div class="container status text-center">
@@ -90,22 +93,30 @@ if (!isset($_SESSION['admin'])) {
 
         <script>
             $(document).ready(function() {
+
                 $("#submit").click(function(e) {
                     var status_val = $('#status option:selected').val();
-                    var remarks_val = $('#remarks').val();
-                    e.preventDefault();
-                    $.ajax({
-                        url: 'php/updateCsvStatus.php',
-                        type: 'get',
-                        data: {
-                            remarks: remarks_val,
-                            status: status_val,
-                            fileid: '<?php echo $_GET['fileid']; ?>'
-                        },
-                        success: function(response) {
-                            $("#response").text('Status Updated Successfully')
-                        }
-                    });
+                    if ($('#remarks').val().length != 0 && status_val != 'none') {
+                        var remarks_val = $('#remarks').val();
+                        e.preventDefault();
+                        $.ajax({
+                            url: 'php/updateCsvStatus.php',
+                            type: 'post',
+                            data: {
+                                remarks: remarks_val,
+                                status: status_val,
+                                fileid: '<?php echo $_GET['fileid']; ?>',
+                                csrf: '<?php echo $token; ?>'
+                            },
+                            success: function(response) {
+                                location.reload();
+                            }
+                        });
+                    }
+                    else{
+                        $('#response').text('Add Remarks and Status');
+                    }
+
                 });
             });
         </script>
@@ -116,26 +127,6 @@ if (!isset($_SESSION['admin'])) {
 <?php
 } else {
     echo "Acces Denied";
-}
-function colorDark($from){
-    if($from == 'HR'){
-        echo "darker";
-    }
-}
-
-function msgRight($from){
-    if($from == 'HR'){
-        echo "msg-right";
-    }
-}
-
-function timeRight($from){
-    if($from == 'HR'){
-        echo "time-left";
-    }
-    else{
-        echo "time-right";
-    }
 }
 
 ?>
