@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+if(!isset($_SESSION["user"]))
+        header("Location: index.php");
+
 $token = md5(uniqid(rand(), TRUE));
 $_SESSION['csrf_token'] = $token;
 ?>
@@ -13,7 +17,7 @@ $_SESSION['csrf_token'] = $token;
 </head>
 
 <body>
-<nav class="navbar navbar-expand-md navbar-light bg-light">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -49,8 +53,11 @@ $_SESSION['csrf_token'] = $token;
             </div>
             <div class="col-md-5"> 
                 <input type="submit" name="uploadCSV" id="uploadCSV" value="Upload" class="btn btn-primary mr-2 my-2" />
-                <input type="submit" name="importCSV" formaction="php/file_upload.php" id="importCSV" value="Import" class="btn btn-primary ml-2 my-2" disabled/>
-                </div>  
+            </div>
+            <div class="col-md-5" id="submission" style="display:none"> 
+                <label>Do you want to confirm submission?</label>
+                <input type="submit" name="importCSV" formaction="php/file_upload.php" id="importCSV" value="Submit" class="btn btn-primary ml-2 my-2"/>
+            </div>
             <div style="clear:both"></div>
         </form>
         <br>
@@ -61,70 +68,78 @@ $_SESSION['csrf_token'] = $token;
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script>
-        $(document).ready(function(){
-
-            $("#csvfile").change(function () {
-                var fileExtension = ['csv'];
-                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
-                    alert("Invalid format of file" );
-                    $("#uploadfile")[0].reset();
-                }
-            });
-
-
-            $('#uploadCSV').on('click', function(event){
-           
-                    event.preventDefault();
-                    var inputcsv=$('#csvfile')[0];
-                    var uploadfile=$('#uploadfile')[0];
-                    
-                    if($(inputcsv).val()==""){
-                        alert("Please choose a CSV file");
-                    }
-                    else{
-                    $.ajax({
-                     url:"php/fetchcsv.php",
-                     method:"POST",
-                     data:new FormData(uploadfile),
-                     dataType:'json',
-                     contentType:false,
-                     cache:false,
-                     processData:false,
-                     success:function(data)
-                     {
-                    $('#importCSV').prop('disabled', false);
-                      var html = '<table class="table table-striped table-bordered">';
-                      if(data.column)
-                      {
-                       html += '<tr>';
-                       for(var count = 0; count < data.column.length; count++)
-                       {
-                        html += '<th>'+data.column[count]+'</th>';
-                       }
-                       html += '</tr>';
-                      }
-                  
-                      if(data.row_data)
-                      {
-                       for(var count = 0; count < data.row_data.length; count++)
-                       {
-                        html += '<tr>';
-                        html += '<td class="Date" >'+data.row_data[count].Date+'</td>';
-                        html += '<td class="Person" >'+data.row_data[count].Person+'</td>';
-                        html += '<td class="Project" >'+data.row_data[count].Project+'</td>';
-                        html += '<td class="Task/Deliverable" >'+data.row_data[count].Task_Deliverable+'</td>';
-                        html += '<td class="Time in Hours" >'+data.row_data[count].Time_in_Hours+'</td>';
-                        html += '<td class="Role">'+data.row_data[count].Role+'</td>';
-                        html += '<td class="Time in Minutes">'+data.row_data[count].Time_in_Minutes+'</td></tr>';
-                       }
-                      }
-                      html += '</table>';
-                      $('#csv_file_data').html(html);
-                     }
-                    });
-                }
-            });
+    function HideSubmit() {
+        var Submitbtn = document.getElementById("submission");
+        if (Submitbtn.style.display === "none") 
+        Submitbtn.style.display = "block";
+    }
+    $(document).ready(function(){
+        $("#csvfile").change(function () {
+            $('#csv_file_data').html("");
+            var Submitbtn = document.getElementById("submission");
+            Submitbtn.style.display = "none";
+            var fileExtension = ['csv'];
+            if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                alert("Choose a valid format of file" );
+                $("#uploadfile")[0].reset();
+            }
         });
+
+
+        $('#uploadCSV').on('click', function(event){
+                
+            event.preventDefault();
+            var inputcsv=$('#csvfile')[0];
+            var uploadfile=$('#uploadfile')[0];
+            if($(inputcsv).val()==""){
+                alert("Please choose a CSV file");
+                $('#csv_file_data').html("");
+                $("#uploadfile")[0].reset();
+            }
+            else
+            {
+                $.ajax({
+                    url:"php/fetchcsv.php",
+                    method:"POST",
+                    data:new FormData(uploadfile),
+                    dataType:'json',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    success:function(data)
+                    {
+                       HideSubmit();
+                        var html = '<table class="table table-striped table-bordered">';
+                        if(data.column)
+                        {
+                            html += '<tr>';
+                            for(var count = 0; count < data.column.length; count++)
+                            {
+                                html += '<th>'+data.column[count]+'</th>';
+                            }
+                            html += '</tr>';
+                        }
+                        if(data.row_data)
+                        {
+                            for(var count = 0; count < data.row_data.length; count++)
+                            {
+                                html += '<tr>';
+                                html += '<td class="Date" >'+data.row_data[count].Date+'</td>';
+                                html += '<td class="Person" >'+data.row_data[count].Person+'</td>';
+                                html += '<td class="Project" >'+data.row_data[count].Project+'</td>';
+                                html += '<td class="Task/Deliverable" >'+data.row_data[count].Task_Deliverable+'</td>';
+                                html += '<td class="Time in Hours" >'+data.row_data[count].Time_in_Hours+'</td>';
+                                html += '<td class="Role">'+data.row_data[count].Role+'</td>';
+                                html += '<td class="Time in Minutes">'+data.row_data[count].Time_in_Minutes+'</td></tr>';
+                            }
+                        }
+                        html += '</table>';
+                        $('#csv_file_data').html(html);
+                    }
+                });
+            }
+        });
+    });
     </script>
 </body>
 </html>
