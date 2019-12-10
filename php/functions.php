@@ -4,8 +4,8 @@ function connectionDB()
 {
   $serverName="localhost";
   $dbUser="root";
-  $dbPassword="root";
-  $dbName="timesheet";
+  $dbPassword="suresh";
+  $dbName="timesheetDB";
 
   $conn = new mysqli($serverName,$dbUser,$dbPassword,$dbName);
   if($conn->connect_error)
@@ -57,7 +57,6 @@ function register($conn, $firstname,$lastname, $email, $password, $cpassword)
   }
 }
 
-
 function selectReg($uid,$conn)
 {
     $user_reg_details_query="SELECT * from registration where uid='$uid'";
@@ -100,5 +99,49 @@ function insertUser($uid, $add, $bio, $proj, $image, $conn)
     $stmt = $conn->prepare("INSERT INTO user_details (uid,address,bio,project,image) VALUES (?, ?,?, ?, ?)");
     $stmt->bind_param("issss", $uid, $add, $bio, $proj, $image );
     $stmt->execute();
+}
+
+function insertFiles($conn, $uid, $tmpfile, $status)
+{
+    $stmt = $conn->prepare("INSERT INTO files (uid,path,status) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss",$uid, $tmpfile, $status);
+    $stmt->execute();
+}
+
+function insertRemarks($conn, $fileid, $uid, $admin, $msg)
+{
+    $query = "INSERT INTO `remarks` (fileid,reply_from,reply_to,message,created_at) VALUES ('$fileid','$uid','$admin','$msg',now())";
+    $result = $conn -> query($query);
+    return $result;
+}
+
+function selectFilesUsingFileid($conn, $fileid)
+{
+    $result = $conn -> query("SELECT * FROM files where fileid='$fileid'");
+    return $result;
+}
+
+function selectFilesUsingUserid($conn, $uid)
+{
+    $result = $conn -> query("SELECT * FROM files where uid='$uid'");
+    return $result;
+}
+
+function selectFilesUsingPath($conn, $path)
+{
+    $result = $conn -> query("SELECT * FROM files where path='$path'");
+    return $result;
+}
+
+function selectRemarksUsingFileid($conn, $fileid)
+{
+    $result = $conn -> query("SELECT * FROM remarks where fileid='$fileid'");
+    return $result;
+}
+
+function selectRegistrationUsingEmail($conn, $email)
+{
+    $result = $conn->query("SELECT * FROM registration WHERE email='".$email."'");
+    return $result;
 }
 ?>
