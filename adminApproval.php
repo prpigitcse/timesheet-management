@@ -130,61 +130,7 @@ if ($userRegDetailsResults->num_rows > 0) {
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
 
-            $("#status").change(function(e) {
-                    var val = $(this).val();
-                    e.preventDefault();
-                    $.ajax({
-                    url: 'php/filterUsers.php',
-                    type: 'post',
-                    data: {
-                        status: val
-                    },
-                    success: function(response) {
-                        $("#response").html(response);
-                    }
-
-                });
-            });
-
-
-            $("#submitaction").click(function(e) {
-                e.preventDefault();
-                var val = $('#action option:selected').val();
-                if(val=='none')
-                {
-                    alert("Select an action");
-
-                }   else {
-                        if($(".selectuser:checked").length > 0) {
-                            var selectedUserId = [];
-                            $('.selectuser').each(function() {
-                                if ($(this).is(":checked")) {
-                                    selectedUserId.push($(this).val());
-                                }
-                            });
-
-                            $.ajax({
-                                url: 'php/userStatusUpdate.php',
-                                type: 'post',
-                                data: {
-                                    status: val,
-                                    userId : selectedUserId
-                                },
-                                success: function(response) {
-                                    $("#response").html(response);
-                                    $("#message").text('Status Updated');
-
-                                }
-                            });
-                        }   else{
-                                alert("Select users");
-                            }
-                    }
-            });
-        });
-    </script>
+    <script type="text/javascript" src="assets/js/script.js"></script>
 </body>
 </html>
