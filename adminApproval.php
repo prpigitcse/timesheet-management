@@ -1,13 +1,11 @@
 <?php
-   
 session_start();
-require_once("php/functions.php");
+require_once "php/functions.php";
 
-if(!isset($_SESSION["admin"]))
-        header("Location: index.php");
+// if(!isset($_SESSION["admin"]))
+//         header("Location: index.php");
 
-
-$conn=connectionDB();
+$conn=connectionDb();
 
 ?>
 
@@ -54,83 +52,83 @@ $conn=connectionDB();
             <p style="color:green;text-align:center" id="message"></p>
         </div>
         <div class="row py-2">
-
             <div class="col-6">
                 <select id="action" name="action" class="form-control">
-                    <option value="none" selected disabled hidden>Select Action </option> 
+                    <option value="none" selected disabled hidden>Select Action </option>
                     <option value="approved">Approve</option>
                     <option value="rejected">Reject</option>
                 </select>
             </div>
             <div class="col-6">
                 <select id="status" name="status" class="form-control">
-                    <option value="none" selected disabled hidden> Filter </option> 
+                    <option value="none" selected disabled hidden> Filter </option>
                     <option value="all">All users</option>
                     <option value="approved">Approved users</option>
                     <option value="pending">Pending users</option>
                     <option value="rejected">Rejected users</option>
-                </select>            
+                </select>
             </div>
-        
-            </div>
-
+        </div>
         <div class="row py-2">
-        <table class="table table-responsive-sm">
-  <thead>
-    <tr class="thead-light">
-      <th scope="col"></th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Role</th>
-      <th scope="col">Status</th>
-    </tr>
-  </thead>
-  <tbody id="response">
-
+            <table class="table table-responsive-sm">
+                <thead>
+                    <tr class="thead-light">
+                        <th scope="col"></th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="response">
 <?php
 
-  //fetch values from registration table for all user
-  $user_reg_details_results=selectAllUsers($conn);
+    //fetch values from registration table for all user
+    $userRegDetailsResults=selectAllReg($conn, $filter="all");
 
-  if($user_reg_details_results->num_rows > 0) {
-    while($user_reg_details_row = $user_reg_details_results->fetch_assoc()) {
-
-        if($user_reg_details_row['role'] != "admin")
-        {
-            $uid=$user_reg_details_row['uid'];
+if ($userRegDetailsResults->num_rows > 0) {
+    while ($userRegDetailsRow = $userRegDetailsResults->fetch_assoc()) {
+        if ($userRegDetailsRow['role'] != "admin") {
+            $uid=$userRegDetailsRow['uid'];
             echo "<tr>";
             echo "<td>  <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'></td>";
-            echo "<td>".$user_reg_details_row['fname']." ".$user_reg_details_row['lname']."</td>";
-            echo "<td>".$user_reg_details_row['email']."</td>";
-            echo "<td>".$user_reg_details_row['role']."</td>";
-            echo "<td>".$user_reg_details_row['status']."</td>";
+            echo "<td>".$userRegDetailsRow['fname']." ".$userRegDetailsRow['lname']."</td>";
+            echo "<td>".$userRegDetailsRow['email']."</td>";
+            echo "<td>".$userRegDetailsRow['role']."</td>";
+            echo "<td>".$userRegDetailsRow['status']."</td>";
             echo "</tr>";
         }
     }
-  }
+}
 ?>
-    
-  </tbody>
+
+    </tbody>
 </table>
-        
-        
+
+
         </div>
 
         <div class="row py-2">
             <div class="col-6">
-                <input id="submitaction" class="btn btn-primary" type="submit" name="submitaction" value="Action">
+                <input id="submitaction" class="btn btn-primary" type="submit"
+                name="submitaction" value="Action">
             </div>
 
         </div>
-    
-    
-    
-    </div>
- 
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -144,7 +142,7 @@ $conn=connectionDB();
                     data: {
                         status: val
                     },
-                    success: function(response) {     
+                    success: function(response) {
                         $("#response").html(response);
                     }
 
@@ -161,10 +159,10 @@ $conn=connectionDB();
 
                 }   else {
                         if($(".selectuser:checked").length > 0) {
-                            var selecteduserid = [];
+                            var selectedUserId = [];
                             $('.selectuser').each(function() {
                                 if ($(this).is(":checked")) {
-                                    selecteduserid.push($(this).val());
+                                    selectedUserId.push($(this).val());
                                 }
                             });
 
@@ -173,9 +171,9 @@ $conn=connectionDB();
                                 type: 'post',
                                 data: {
                                     status: val,
-                                    userid : selecteduserid
+                                    userId : selectedUserId
                                 },
-                                success: function(response) {    
+                                success: function(response) {
                                     $("#response").html(response);
                                     $("#message").text('Status Updated');
 
@@ -188,6 +186,5 @@ $conn=connectionDB();
             });
         });
     </script>
-      
 </body>
 </html>

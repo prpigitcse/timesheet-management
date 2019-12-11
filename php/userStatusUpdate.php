@@ -1,36 +1,29 @@
 <?php
 session_start();
-require_once("functions.php");
-$conn=connectionDB();
+require_once "functions.php";
+$conn=connectionDb();
 $status=$_POST['status'];
-$userid=$_POST['userid'];
+$userId=$_POST['userId'];
 
-foreach($userid as $key => $value)
-{
+foreach ($userId as $key => $value) {
     $stmt = $conn->prepare("UPDATE registration SET status=? WHERE uid=?");
-    $stmt->bind_param("si", $status, $value );
+    $stmt->bind_param("si", $status, $value);
     $stmt->execute();
 }
 
-    $user_reg_details_query="SELECT * from registration";
-    $user_reg_details_results=$conn->query($user_reg_details_query);
-    
-    if($user_reg_details_results->num_rows > 0) {
-        while($user_reg_details_row = $user_reg_details_results->fetch_assoc()) {
-    
-            if($user_reg_details_row['role'] != "admin")
-            {
-                $uid=$user_reg_details_row['uid'];
-                echo "<tr> 
+    $userRegDetailsResults=selectAllReg($conn, $filter="all");
+
+if ($userRegDetailsResults->num_rows > 0) {
+    while ($userRegDetailsRow = $userRegDetailsResults->fetch_assoc()) {
+        if ($userRegDetailsRow['role'] != "admin") {
+            $uid=$userRegDetailsRow['uid'];
+            echo "<tr>
                     <td>   <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'> </td>
-                    <td>".$user_reg_details_row['fname']." ".$user_reg_details_row['lname']."</td>
-                    <td>".$user_reg_details_row['email']."</td>
-                    <td>".$user_reg_details_row['role']."</td>
-                    <td>".$user_reg_details_row['status']."</td>
+                    <td>".$userRegDetailsRow['fname']." ".$userRegDetailsRow['lname']."</td>
+                    <td>".$userRegDetailsRow['email']."</td>
+                    <td>".$userRegDetailsRow['role']."</td>
+                    <td>".$userRegDetailsRow['status']."</td>
                     </tr>";
-            }
         }
-      }
-
-
-?>
+    }
+}
