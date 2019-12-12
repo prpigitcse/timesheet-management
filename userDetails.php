@@ -2,14 +2,14 @@
 session_start();
 require_once "php/functions.php" ;
 
-if (!isset($_SESSION["user"])) {
-        header("Location: index.php");
-}
+// if (!isset($_SESSION["user"])) {
+//         header("Location: index.php");
+// }
 
 
 $conn=connectionDb();
-$uid=$_SESSION['uid'];
-// $uid="9";
+// $uid=$_SESSION['uid'];
+$uid="9";
 $dataReg = fetchReg($uid, $conn);
 $dataUser = fetchUser($uid, $conn);
 

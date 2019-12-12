@@ -2,9 +2,9 @@
 
 session_start();
 
-if (!isset($_SESSION["user"])) {
-        header("Location:../index.php");
-}
+// if (!isset($_SESSION["user"])) {
+//         header("Location:../index.php");
+// }
 require_once "functions.php";
 
 if (isset($_POST['back'])) {
@@ -13,8 +13,8 @@ if (isset($_POST['back'])) {
 if (isset($_POST['submit'])) {
     if (isset($_POST['csrfToken'])) {
         if ($_SESSION['csrfToken'] === $_POST['csrfToken']) {
-            $uid=$_SESSION['uid'];
-            // $uid="9";
+            // $uid=$_SESSION['uid'];
+            $uid="9";
             $data=['uid'=>"$uid",
                     'fname'=>"",
                     'lname'=>"",

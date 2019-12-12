@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["user"])) {
-        header("Location: index.php");
-}
+// if (!isset($_SESSION["user"])) {
+//         header("Location: index.php");
+// }
 
 require_once "php/functions.php";
 $token = md5(uniqid(rand(), true));
@@ -11,8 +11,8 @@ $_SESSION['csrfToken'] = $token;
 
 
 $conn=connectionDb();
-$uid=$_SESSION['uid'];
-// $uid="9";
+// $uid=$_SESSION['uid'];
+$uid="9";
 $dataReg=fetchReg($uid, $conn);
 $dataUser=fetchUser($uid, $conn);
 
