@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-if(!isset($_SESSION["user"]))
+if (!isset($_SESSION["user"])) {
         header("Location: index.php");
+}
 
 $token = md5(uniqid(rand(), TRUE));
 $_SESSION['csrf_token'] = $token;
@@ -41,20 +42,20 @@ $_SESSION['csrf_token'] = $token;
     </nav>
     <div class="container">
         <h2>Upload your timesheet file here</h2>
-        <form enctype="multipart/form-data" method="post" id="uploadfile" class="upload"> 
+        <form enctype="multipart/form-data" method="post" id="uploadfile" class="upload">
             <div class="col-md-3">
                 <label>Upload CSV file : </label>
             </div>
             <div class="col-md-4">
                 <input type="file" name="csvfile" id="csvfile" value="" accept=".csv" class="text-center"/><br>
-            </div> 
+            </div>
             <div class="col-md-4">
                 <input type="hidden" name="csrf_token" value="<?php echo $token; ?>"/>
             </div>
-            <div class="col-md-5"> 
+            <div class="col-md-5">
                 <input type="submit" name="uploadCSV" id="uploadCSV" value="Upload" class="btn btn-primary mr-2 my-2" />
             </div>
-            <div class="col-md-5" id="submission" style="display:none"> 
+            <div class="col-md-5" id="submission" style="display:none">
                 <label>Do you want to confirm submission?</label>
                 <input type="submit" name="importCSV" formaction="php/file_upload.php" id="importCSV" value="Submit" class="btn btn-primary ml-2 my-2"/>
             </div>
@@ -70,7 +71,7 @@ $_SESSION['csrf_token'] = $token;
     <script>
     function HideSubmit() {
         var Submitbtn = document.getElementById("submission");
-        if (Submitbtn.style.display === "none") 
+        if (Submitbtn.style.display === "none")
         Submitbtn.style.display = "block";
     }
     $(document).ready(function(){
@@ -87,7 +88,7 @@ $_SESSION['csrf_token'] = $token;
 
 
         $('#uploadCSV').on('click', function(event){
-                
+
             event.preventDefault();
             var inputcsv=$('#csvfile')[0];
             var uploadfile=$('#uploadfile')[0];
