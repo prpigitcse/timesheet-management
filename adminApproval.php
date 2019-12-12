@@ -2,8 +2,9 @@
 session_start();
 require_once "php/functions.php";
 
-// if(!isset($_SESSION["admin"]))
-//         header("Location: index.php");
+if (!isset($_SESSION["admin"])) {
+        header("Location: index.php");
+}
 
 $conn=connectionDb();
 
@@ -49,7 +50,7 @@ $conn=connectionDb();
         </div>
 
         <div class="text-center">
-            <p style="color:green;text-align:center" id="message"></p>
+            <p id="statusMessage"></p>
         </div>
         <div class="row py-2">
             <div class="col-6">
@@ -91,7 +92,7 @@ if ($userRegDetailsResults->num_rows > 0) {
         if ($userRegDetailsRow['role'] != "admin") {
             $uid=$userRegDetailsRow['uid'];
             echo "<tr>";
-            echo "<td>  <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'></td>";
+            echo "<td>  <input type='checkbox' class='selectUser' name='selectUser[]' value='$uid'></td>";
             echo "<td>".$userRegDetailsRow['fname']." ".$userRegDetailsRow['lname']."</td>";
             echo "<td>".$userRegDetailsRow['email']."</td>";
             echo "<td>".$userRegDetailsRow['role']."</td>";
@@ -101,23 +102,16 @@ if ($userRegDetailsResults->num_rows > 0) {
     }
 }
 ?>
-
     </tbody>
 </table>
-
-
-        </div>
-
+    </div>
         <div class="row py-2">
             <div class="col-6">
-                <input id="submitaction" class="btn btn-primary" type="submit"
-                name="submitaction" value="Action">
+                <input id="submitAction" class="btn btn-primary" type="submit"
+                name="submitAction" value="Action">
             </div>
 
         </div>
-
-
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

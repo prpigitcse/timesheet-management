@@ -1,8 +1,9 @@
 <?php
 session_start();
 
-// if(!isset($_SESSION["user"]))
-//         header("Location: index.php");
+if (!isset($_SESSION["user"])) {
+        header("Location: index.php");
+}
 
 require_once "php/functions.php";
 $token = md5(uniqid(rand(), true));
@@ -10,8 +11,8 @@ $_SESSION['csrfToken'] = $token;
 
 
 $conn=connectionDb();
-// $uid=$_SESSION['uid'];
-$uid="9";
+$uid=$_SESSION['uid'];
+// $uid="9";
 $dataReg=fetchReg($uid, $conn);
 $dataUser=fetchUser($uid, $conn);
 
@@ -59,7 +60,7 @@ $dataUser=fetchUser($uid, $conn);
     <?php
     if (!empty($_REQUEST['errorMessage'])) {
         $errorMessage=$_REQUEST['errorMessage'];
-        echo "<p style='color:red;text-align:center'>" . $_REQUEST['errorMessage'] . "</p>";
+        echo "<p class='errorMsg'>" . $_REQUEST['errorMessage'] . "</p>";
     }
     ?>
 
@@ -69,19 +70,19 @@ $dataUser=fetchUser($uid, $conn);
         <form action="php/userUpdateAction.php" method="post" id="registration"  enctype="multipart/form-data">
 
         <div class="form-group">
-            <label for="fname">First Name</label>
-            <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name" value="<?php echo $dataReg['fname'];?>">
-            <span id="fnErrorMsg"></span>
+            <label for="firstName">First Name</label>
+            <input type="text" name="firstName" class="form-control" id="firstName" placeholder="First Name" value="<?php echo $dataReg['fname'];?>">
+            <span id="fnError"></span>
         </div>
         <div class="form-group">
-            <label for="lname">Last Name</label>
-            <input type="text" name="lname" class="form-control" id="lname" placeholder="Last Name" value="<?php echo $dataReg['lname'];?>">
-            <span id="lnErrorMsg"></span>
+            <label for="lastName">Last Name</label>
+            <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Last Name" value="<?php echo $dataReg['lname'];?>">
+            <span id="lnError"></span>
         </div>
         <div class="form-group">
             <label for="currentPassword">Current Password</label>
             <input type="Password"class="form-control"  name="currentPassword" placeholder="Current Password" id="currentPassword">
-            <span id="currentPasswordErrMsg" style="color:red;"></span>
+            <span id="currentPasswordErrMsg"></span>
         </div>
         <div class="form-group">
             <label for="newPassword">New Password</label>
@@ -90,7 +91,7 @@ $dataUser=fetchUser($uid, $conn);
         <div class="form-group">
             <label for="confirmPassword">Confirm Password</label>
             <input type="Password" class="form-control" name="confirmPassword" placeholder="Confirm Password" id="confirmPassword">
-            <span id="message"></span>
+            <span id="passwordError"></span>
         </div>
         <div class="form-group">
             <label for="address">Address</label>

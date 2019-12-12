@@ -11,7 +11,7 @@ if ($userRegDetailsResults->num_rows > 0) {
         if ($userRegDetailsRow['role'] != "admin") {
             $uid=$userRegDetailsRow['uid'];
             echo "<tr>
-                <td>  <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'></td>
+                <td>  <input type='checkbox' class='selectUser' name='selectUser[]' value='$uid'></td>
                 <td>".$userRegDetailsRow['fname']." ".$userRegDetailsRow['lname']."</td>
                 <td>".$userRegDetailsRow['email']."</td>
                 <td>".$userRegDetailsRow['role']."</td>

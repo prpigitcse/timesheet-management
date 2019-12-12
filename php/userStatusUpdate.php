@@ -6,19 +6,17 @@ $status=$_POST['status'];
 $userId=$_POST['userId'];
 
 foreach ($userId as $key => $value) {
-    $stmt = $conn->prepare("UPDATE registration SET status=? WHERE uid=?");
-    $stmt->bind_param("si", $status, $value);
-    $stmt->execute();
+    updateRegStatus($status, $value, $conn);
 }
 
-    $userRegDetailsResults=selectAllReg($conn, $filter="all");
+$userRegDetailsResults=selectAllReg($conn, $filter="all");
 
 if ($userRegDetailsResults->num_rows > 0) {
     while ($userRegDetailsRow = $userRegDetailsResults->fetch_assoc()) {
         if ($userRegDetailsRow['role'] != "admin") {
             $uid=$userRegDetailsRow['uid'];
             echo "<tr>
-                    <td>   <input type='checkbox' class='selectuser' name='selectuser[]' value='$uid'> </td>
+                    <td>   <input type='checkbox' class='selectUser' name='selectUser[]' value='$uid'> </td>
                     <td>".$userRegDetailsRow['fname']." ".$userRegDetailsRow['lname']."</td>
                     <td>".$userRegDetailsRow['email']."</td>
                     <td>".$userRegDetailsRow['role']."</td>

@@ -22,44 +22,6 @@ function cleanText($string)
     return $string;
 }
 
-function register($conn, $firstname, $lastname, $email, $password, $cpassword, $role, $status)
-{
-    $allowed = [
-      'specbee.com',
-    ];
-
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $parts = explode('@', $email);
-        $domain = array_pop($parts);
-
-        if (!in_array($domain, $allowed)) {
-            $Message = "Invalid email address. Please enter email in the form @specbee.com";
-            header("Location:../registration.php?error={$Message}");
-        } else {
-            $slquery = "SELECT 1 FROM registration WHERE email = '$email'";
-            $selectresult = $conn->query($slquery);
-            if ($selectresult->num_rows > 0) {
-                $Message = "Email already exists";
-                header("Location:../registration.php?error={$Message}");
-            } elseif ($password != $cpassword) {
-                $Message = "Passwords doesnot match";
-                header("Location:../registration.php?error={$Message}");
-            } else {
-                $hashpassword=password_hash($password, PASSWORD_DEFAULT);
-
-                $stmt = $conn->prepare("INSERT INTO registration (fname,lname,email,password,role,status) VALUES (?, ?,?, ?, ?,?)");
-                $stmt->bind_param("ssssss", $firstname, $lastname, $email, $hashpassword, $role, $status);
-                $result=$stmt->execute();
-                if ($result) {
-                    $Message = "User Created Successfully";
-                    header("Location:../index.php?error={$Message}");
-                }
-            }
-        }
-    }
-}
-
-
 function selectAllReg($conn, $filter)
 {
     if ($filter == "all") {
@@ -92,6 +54,12 @@ function updateReg($data, $conn)
 {
     $stmt = $conn->prepare("UPDATE registration SET fname=?, lname=? WHERE uid=?");
     $stmt->bind_param("ssi", $data['fname'], $data['lname'], $data['uid']);
+    $stmt->execute();
+}
+function updateRegStatus($status, $value, $conn)
+{
+    $stmt = $conn->prepare("UPDATE registration SET status=? WHERE uid=?");
+    $stmt->bind_param("si", $status, $value);
     $stmt->execute();
 }
 
@@ -217,72 +185,4 @@ function userDetailsUpdate($data)
         }
         header("Location: ../userDetails.php");
     }
-}
-
-function insertRemarks($conn, $fileid, $uid, $admin, $msg)
-{
-    $query = "INSERT INTO `remarks` (fileid,reply_from,reply_to,message,created_at) VALUES ('$fileid','$uid','$admin','$msg',now())";
-    $result = $conn -> query($query);
-    return $result;
-}
-function selectFilesUsingFileid($conn, $fileid)
-{
-    $result = $conn -> query("SELECT * FROM files where fileid='$fileid'");
-    return $result;
-}
-function selectFilesUsingUserid($conn, $uid)
-{
-    $result = $conn -> query("SELECT * FROM files where uid='$uid'");
-    return $result;
-}
-function selectFilesUsingPath($conn, $path)
-{
-    $result = $conn -> query("SELECT * FROM files where path='$path'");
-    return $result;
-}
-function selectRemarksUsingFileid($conn, $fileid)
-{
-    $result = $conn -> query("SELECT * FROM remarks where fileid='$fileid'");
-    return $result;
-}
-function selectRegistrationUsingEmail($conn, $email)
-{
-    $result = $conn->query("SELECT * FROM registration WHERE email='".$email."'");
-    return $result;
-}
-
-
-function colorDark($from)
-{
-    if ($from == 'admin') {
-        echo "darker";
-    }
-}
-
-function msgPosition($from)
-{
-    if ($from == 'admin') {
-        echo "msg-right";
-    }
-}
-
-function timePosition($from)
-{
-    if ($from == 'admin') {
-        echo "time-left";
-    } else {
-        echo "time-right";
-    }
-}
-
-function msgTime($date)
-{
-    $date=date_create($date);
-    echo date_format($date, "h:i M d");
-}
-function insertFiles($conn, $uid, $tmpfile, $status)
-{
-    $stmt = $conn->prepare("INSERT INTO files (uid,path,status) VALUES (?, ?, ?)");
-    $stmt->bind_param("iss", $uid, $tmpfile, $status);
-    $stmt->execute();
 }
