@@ -1,6 +1,6 @@
 <?php
 
-function connectionDB()
+function connectionDb()
 {
   $serverName="localhost";
   $dbUser="root";
@@ -15,7 +15,7 @@ function connectionDB()
   return $conn;
 }
 
-function cleantext($string)
+function cleanText($string)
 {
    $string = trim($string);
    $string = stripslashes($string);
@@ -28,7 +28,7 @@ function register($conn, $firstname,$lastname, $email, $password, $cpassword, $r
   $allowed = [
       'specbee.com',
   ];
-  
+
   if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $parts = explode('@', $email);
     $domain = array_pop($parts);
@@ -38,7 +38,7 @@ function register($conn, $firstname,$lastname, $email, $password, $cpassword, $r
       header("Location:../registration.php?error={$Message}");
     } else {
 
-   
+
 
       $slquery = "SELECT 1 FROM registration WHERE email = '$email'";
       $selectresult = $conn->query($slquery);
@@ -49,13 +49,13 @@ function register($conn, $firstname,$lastname, $email, $password, $cpassword, $r
           $Message = "Passwords doesnot match";
           header("Location:../registration.php?error={$Message}");
       } else {
-       
+
           $hashpassword=password_hash($password,PASSWORD_DEFAULT);
-  
+
           $stmt = $conn->prepare("INSERT INTO registration (fname,lname,email,password,role,status) VALUES (?, ?,?, ?, ?,?)");
           $stmt->bind_param("ssssss",$firstname,$lastname,$email,$hashpassword,$role,$status);
           $result=$stmt->execute();
-                       
+
           if ($result) {
             $Message = "User Created Successfully";
             header("Location:../index.php?error={$Message}");
@@ -136,4 +136,10 @@ function msgTime($date){
   echo date_format($date,"h:i M d");
 }
 
+function insertFiles($conn, $uid, $tmpFile, $status)
+{
+    $stmt = $conn->prepare("INSERT INTO files (uid,path,status) VALUES (?, ?, ?)");
+    $stmt->bind_param("iss", $uid, $tmpFile, $status);
+    $stmt->execute();
+}
 ?>
