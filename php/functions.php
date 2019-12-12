@@ -186,3 +186,30 @@ function userDetailsUpdate($data)
         header("Location: ../userDetails.php");
     }
 }
+function colorDark($from){
+  if($from == 'admin'){
+      echo "darker";
+  }
+}
+
+function msgPosition($from){
+  if($from == 'admin'){
+      echo "msg-right";
+  }
+}
+
+function timePosition($from){
+  if($from == 'admin'){
+      echo "time-left";
+  }
+  else{
+      echo "time-right";
+  }
+}
+
+function msgTime($date){
+  $date=date_create($date);
+  echo date_format($date,"h:i M d");
+}
+
+?>

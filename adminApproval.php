@@ -2,9 +2,9 @@
 session_start();
 require_once "php/functions.php";
 
-// if (!isset($_SESSION["admin"])) {
-//         header("Location: index.php");
-// }
+if (!isset($_SESSION["admin"])) {
+        header("Location: index.php");
+}
 
 $conn=connectionDb();
 
